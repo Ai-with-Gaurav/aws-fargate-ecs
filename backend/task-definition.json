@@ -1,0 +1,76 @@
+{
+  "family": "ecs-backend-api",
+  "requiresCompatibilities": ["FARGATE"],
+  "networkMode": "awsvpc",
+  "cpu": "256",
+  "memory": "512",
+  "runtimePlatform": {
+    "cpuArchitecture": "ARM64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "executionRoleArn": "arn:aws:iam::873595708006:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::873595708006:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "backend-api-container",
+      "image": "873595708006.dkr.ecr.ap-southeast-1.amazonaws.com/my-app-backend:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 4000,
+          "hostPort": 4000,
+          "protocol": "tcp",
+          "name": "backend-api-port"
+        }
+      ],
+      "environment": [
+        { "name": "PORT", "value": "4000" },
+        { "name": "NODE_ENV", "value": "production" }
+      ],
+      "secrets": [
+        {
+          "name": "DB_HOST",
+          "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:873595708006:secret:prod/my-app-backend-u2ge00:DB_HOST::"
+        },
+        {
+          "name": "DB_PORT",
+          "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:873595708006:secret:prod/my-app-backend-u2ge00:DB_PORT::"
+        },
+        {
+          "name": "DB_NAME",
+          "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:873595708006:secret:prod/my-app-backend-u2ge00:DB_NAME::"
+        },
+        {
+          "name": "DB_USER",
+          "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:873595708006:secret:prod/my-app-backend-u2ge00:DB_USER::"
+        },
+        {
+          "name": "DB_PASSWORD",
+          "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:873595708006:secret:prod/my-app-backend-u2ge00:DB_PASSWORD::"
+        },
+        {
+          "name": "JWT_SECRET",
+          "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:873595708006:secret:prod/my-app-backend-u2ge00:JWT_SECRET::"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/backend-api",
+          "awslogs-region": "ap-southeast-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "healthCheck": {
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost:4000/api/v1/health || exit 1"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 5,
+        "startPeriod": 300
+      }
+    }
+  ]
+}
