@@ -3,6 +3,9 @@ name: Deploy Backend to ECS Fargate
 on:
   push:
     branches: [main]
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy.yml'
 
 env:
   AWS_REGION: ap-southeast-1
