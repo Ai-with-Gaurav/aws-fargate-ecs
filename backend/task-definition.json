@@ -51,6 +51,10 @@
         {
           "name": "JWT_SECRET",
           "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:873595708006:secret:prod/my-app-backend-u2ge00:JWT_SECRET::"
+        },
+        {
+          "name": "ALLOWED_ORIGINS",
+          "valueFrom": "arn:aws:secretsmanager:ap-southeast-1:873595708006:secret:prod/my-app-backend-u2ge00:ALLOWED_ORIGINS::"
         }
       ],
       "logConfiguration": {
